@@ -36,3 +36,9 @@ export async function getAllPlannings() {
         .orderBy("created_at", "desc");
     return plannings;
 }
+export async function getCurrentPlanning(month, year) {
+    return db("planning_month")
+        .select("*")
+        .where({ year: year, month: month })
+        .first("id");
+}

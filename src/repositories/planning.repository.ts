@@ -60,3 +60,10 @@ export async function getAllPlannings(): Promise<any> {
 
   return plannings;
 }
+
+export async function getCurrentPlanning(month: any, year: any): Promise<any> {
+  return db("planning_month")
+    .select("*")
+    .where({ year: year, month: month })
+    .first("id");
+}

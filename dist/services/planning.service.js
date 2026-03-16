@@ -24,6 +24,13 @@ export async function getMonthPlanningWeeks(planning_month_id) {
     const rows = await planningRepo.getWeeksWithTransactions(planning_month_id);
     return groupWeeks(rows);
 }
+export async function getCurrentPlanning() {
+    const date = moment();
+    const year = moment(date).year();
+    const month = moment(date).month() + 1;
+    const planning = await planningRepo.getCurrentPlanning(month, year);
+    return planning.id;
+}
 export async function getMonthPlannings() {
     const plannings = await planningRepo.getAllPlannings();
     return plannings;
