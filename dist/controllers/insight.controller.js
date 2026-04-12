@@ -13,3 +13,16 @@ export async function getMonthlySaving(req, res) {
         res.status(500).json({ error: err.message });
     }
 }
+export async function getExpenseCategory(req, res) {
+    try {
+        const expenses = await insightService.getExpenseCategory();
+        return res.status(201).json({
+            success: true,
+            message: "Expenses fetched successfully",
+            data: expenses,
+        });
+    }
+    catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}

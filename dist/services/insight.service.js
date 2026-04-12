@@ -1,10 +1,8 @@
-import * as categoryRepo from "../repositories/category.repositoriry.js";
+import * as transactionRepo from "../repositories/transaction.repository.js";
 import * as planningService from "../services/planning.service.js";
 export async function getMonthlySaving() {
     const currentPlanningId = await planningService.getCurrentPlanning();
     const weeksResponse = await planningService.getMonthPlanningWeeks(currentPlanningId);
-    console.log("currentPlanningId", currentPlanningId);
-    console.log("weeksResponse", weeksResponse);
     const weeks = weeksResponse;
     let totalPlanned = 0;
     let totalSpent = 0;
@@ -18,4 +16,9 @@ export async function getMonthlySaving() {
         saving,
         savingPercentage: Number(savingPercentage.toFixed(2)),
     };
+}
+export async function getExpenseCategory() {
+    const currentPlanningId = await planningService.getCurrentPlanning();
+    const categories = await transactionRepo.getCategories(currentPlanningId);
+    return categories;
 }
