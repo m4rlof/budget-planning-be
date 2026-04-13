@@ -57,3 +57,25 @@ export async function getGoal(goal_id: any): Promise<any> {
     transactions,
   };
 }
+
+export async function getInsightGoals() {
+  const goals = await db("goal").select("name", "id");
+
+  return goals;
+}
+
+export async function getInsightGoal(id: any) {
+  const goal = await db("goal")
+    .select(
+      "id",
+      "name",
+      "target_amount",
+      "current_amount",
+      "start_date",
+      "end_date"
+    )
+    .where({ id })
+    .first();
+
+  return goal;
+}

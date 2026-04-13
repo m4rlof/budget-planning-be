@@ -1,4 +1,5 @@
 import * as transactionRepo from "../repositories/transaction.repository.js";
+import * as goalRepo from "../repositories/goal.repository.js";
 import * as planningService from "../services/planning.service.js";
 
 export async function getMonthlySaving() {
@@ -31,4 +32,16 @@ export async function getExpenseCategory() {
   const categories = await transactionRepo.getCategories(currentPlanningId);
 
   return categories;
+}
+
+export async function getGoals() {
+  const goals = await goalRepo.getInsightGoals();
+
+  return goals;
+}
+
+export async function getGoal(id: any) {
+  const goal = await goalRepo.getInsightGoal(id);
+
+  return goal;
 }
