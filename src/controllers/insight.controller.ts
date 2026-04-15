@@ -46,7 +46,7 @@ export async function getGoals(req: Request, res: Response) {
 
 export async function getGoal(req: Request, res: Response) {
   try {
-    const { id } = req.params;;
+    const id = Number(req.params.id);
 
     const goal = await insightService.getGoal(id);
 

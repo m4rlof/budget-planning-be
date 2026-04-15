@@ -1,11 +1,16 @@
 import { db } from "../config/db.js";
+import type {
+  PlanningMonth,
+  PlanningWeek,
+} from "../interfaces/planning.interface.js";
+import type { TransactionInput } from "../interfaces/transaction.interface.js";
 
 export async function createPlanning(
-  year: any,
-  month: any,
-  total_planned: any,
+  year: number,
+  month: number,
+  total_planned: number,
   trx: any
-) {
+): Promise<number> {
   const [row] = await trx("planning_month")
     .insert({
       year,
@@ -17,13 +22,19 @@ export async function createPlanning(
   return row.id;
 }
 
-export async function updateWeekSpent(transaction: any, trx: any) {
+export async function updateWeekSpent(
+  transaction: TransactionInput,
+  trx: any
+): Promise<void> {
   await trx("planning_week")
     .where("id", transaction.planning_week_id)
     .increment("actual_spent", transaction.amount);
 }
 
-export async function createPlanningWeeks(weeks: any, trx: any) {
+export async function createPlanningWeeks(
+  weeks: PlanningWeek[],
+  trx: any
+): Promise<void> {
   await trx("planning_week").insert(weeks);
 }
 
@@ -33,7 +44,9 @@ export async function getWeeksByMonth(planning_month_id: number): Promise<any> {
     .where({ planning_month_id: planning_month_id });
 }
 
-export async function getWeeksWithTransactions(planning_month_id: number) {
+export async function getWeeksWithTransactions(
+  planning_month_id: number
+): Promise<any[]> {
   const rows = await db("planning_week as pw")
     .leftJoin("expense_transaction as et", "pw.id", "et.planning_week_id")
     .select(
@@ -53,7 +66,7 @@ export async function getWeeksWithTransactions(planning_month_id: number) {
   return rows;
 }
 
-export async function getAllPlannings(): Promise<any> {
+export async function getAllPlannings(): Promise<PlanningMonth[]> {
   const plannings = await db("planning_month")
     .select("*")
     .orderBy("created_at", "desc");
@@ -61,7 +74,10 @@ export async function getAllPlannings(): Promise<any> {
   return plannings;
 }
 
-export async function getCurrentPlanning(month: any, year: any): Promise<any> {
+export async function getCurrentPlanning(
+  month: number,
+  year: number
+): Promise<{ id: number } | null> {
   return db("planning_month")
     .select("*")
     .where({ year: year, month: month })

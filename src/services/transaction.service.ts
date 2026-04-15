@@ -2,7 +2,9 @@ import { db } from "../config/db.js";
 import * as transactionRepo from "../repositories/transaction.repository.js";
 import * as planningRepo from "../repositories/planning.repository.js";
 
-export async function createTransaction(transaction: any) {
+import type { TransactionInput } from "../interfaces/transaction.interface.js";
+
+export async function createTransaction(transaction: TransactionInput) {
   console.log("Transaction", transaction);
 
   return db.transaction(async (trx) => {

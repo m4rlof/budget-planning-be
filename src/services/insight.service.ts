@@ -2,11 +2,17 @@ import * as transactionRepo from "../repositories/transaction.repository.js";
 import * as goalRepo from "../repositories/goal.repository.js";
 import * as planningService from "../services/planning.service.js";
 
-export async function getMonthlySaving() {
+import type {
+  SavingInsight,
+  ExpenseCategoryInsight,
+  GoalInsight,
+} from "../interfaces/insight.interface.js";
+
+export async function getMonthlySaving(): Promise<SavingInsight> {
   const currentPlanningId = await planningService.getCurrentPlanning();
-  const weeksResponse: any = await planningService.getMonthPlanningWeeks(
+  const weeksResponse = await planningService.getMonthPlanningWeeks(
     currentPlanningId
-  );
+  ); // PlanningWeek[]
 
   const weeks = weeksResponse;
 
@@ -14,8 +20,8 @@ export async function getMonthlySaving() {
   let totalSpent = 0;
 
   for (const week of weeks) {
-    totalPlanned += parseFloat(week.planned_budget);
-    totalSpent += parseFloat(week.actual_spent);
+    totalPlanned += parseFloat(String(week.planned_budget));
+    totalSpent += parseFloat(String(week.actual_spent));
   }
 
   const saving = totalPlanned - totalSpent;
@@ -27,20 +33,20 @@ export async function getMonthlySaving() {
   };
 }
 
-export async function getExpenseCategory() {
+export async function getExpenseCategory(): Promise<ExpenseCategoryInsight[]> {
   const currentPlanningId = await planningService.getCurrentPlanning();
   const categories = await transactionRepo.getCategories(currentPlanningId);
 
   return categories;
 }
 
-export async function getGoals() {
+export async function getGoals(): Promise<GoalInsight[]> {
   const goals = await goalRepo.getInsightGoals();
 
   return goals;
 }
 
-export async function getGoal(id: any) {
+export async function getGoal(id: number): Promise<any> {
   const goal = await goalRepo.getInsightGoal(id);
 
   return goal;

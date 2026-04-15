@@ -15,7 +15,7 @@ export async function createPlanning(planning_date, entries) {
             amount: Number(entry.amount),
         }));
         await financialEntryRepo.createFinancialEntries(entriesToInsert, trx);
-        const weeks = generateWeeks(planning_date, total_planned, planningId);
+        const weeks = generateWeeks(planning_date, total_planned, planningId); // PlanningWeek[]
         await planningRepo.createPlanningWeeks(weeks, trx);
         return planningId;
     });

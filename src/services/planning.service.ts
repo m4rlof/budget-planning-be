@@ -3,7 +3,16 @@ import * as financialEntryRepo from "../repositories/financial-entry.repository.
 import moment from "moment";
 import { db } from "../config/db.js";
 
-export async function createPlanning(planning_date: any, entries: any[]) {
+import type {
+  PlanningWeek,
+  TransactionOverview,
+  WeekWithTransactions,
+} from "../interfaces/planning.interface.js";
+
+export async function createPlanning(
+  planning_date: string | Date,
+  entries: any[]
+) {
   const year = moment(planning_date).year();
   const month = moment(planning_date).month() + 1;
   const total_planned = calculatePlanned(entries);
@@ -16,7 +25,7 @@ export async function createPlanning(planning_date: any, entries: any[]) {
       trx
     );
 
-    const entriesToInsert = entries.map((entry) => ({
+    const entriesToInsert: any = entries.map((entry) => ({
       planning_month_id: planningId,
       type: entry.type,
       category_id: entry.category,
@@ -25,7 +34,7 @@ export async function createPlanning(planning_date: any, entries: any[]) {
 
     await financialEntryRepo.createFinancialEntries(entriesToInsert, trx);
 
-    const weeks = generateWeeks(planning_date, total_planned, planningId);
+    const weeks = generateWeeks(planning_date, total_planned, planningId); // PlanningWeek[]
 
     await planningRepo.createPlanningWeeks(weeks, trx);
 
@@ -33,18 +42,20 @@ export async function createPlanning(planning_date: any, entries: any[]) {
   });
 }
 
-export async function getMonthPlanningWeeks(planning_month_id: any) {
+export async function getMonthPlanningWeeks(
+  planning_month_id: number
+): Promise<PlanningWeek[] | TransactionOverview[]> {
   const rows = await planningRepo.getWeeksWithTransactions(planning_month_id);
 
   return groupWeeks(rows);
 }
 
-export async function getCurrentPlanning() {
+export async function getCurrentPlanning(): Promise<number> {
   const date = moment();
   const year = moment(date).year();
   const month = moment(date).month() + 1;
 
-  const planning = await planningRepo.getCurrentPlanning(month, year);
+  const planning: any = await planningRepo.getCurrentPlanning(month, year);
 
   return planning.id;
 }
@@ -54,7 +65,7 @@ export async function getMonthPlannings() {
   return plannings;
 }
 
-export function groupWeeks(rows: any[]) {
+export function groupWeeks(rows: any[]): WeekWithTransactions[] {
   const map: any = {};
 
   rows.forEach((row) => {
@@ -82,7 +93,7 @@ export function groupWeeks(rows: any[]) {
   return Object.values(map);
 }
 
-function calculatePlanned(entries: any[]) {
+function calculatePlanned(entries: any[]): number {
   const result = entries.reduce(
     (acc, entry) => {
       const amount = Number(entry.amount);
@@ -105,7 +116,11 @@ function calculatePlanned(entries: any[]) {
   return result.balance;
 }
 
-function generateWeeks(planning_date: any, totalBudget: any, planningId: any) {
+function generateWeeks(
+  planning_date: string | Date,
+  totalBudget: number,
+  planningId: number
+): PlanningWeek[] {
   const startOfMonth = moment(planning_date).startOf("month");
   const endOfMonth = moment(planning_date).endOf("month");
 

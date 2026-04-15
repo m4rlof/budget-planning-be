@@ -15,7 +15,7 @@ export async function createPlanning(req, res) {
 }
 export async function getMonthPlanningWeeks(req, res) {
     try {
-        const { planning_month_id } = req.params;
+        const planning_month_id = Number(req.params.planning_month_id);
         const monthWeeks = await plannningService.getMonthPlanningWeeks(planning_month_id);
         return res.status(201).json({
             success: true,

@@ -1,6 +1,7 @@
 import * as goalRepo from "../repositories/goal.repository.js";
+import type { Goal } from "../interfaces/goal.interface.js";
 
-export async function createGoal(goal: any) {
+export async function createGoal(goal: Goal) {
   const goalId = await goalRepo.createGoal(goal);
   return goalId;
 }

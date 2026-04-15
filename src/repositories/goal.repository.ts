@@ -1,6 +1,7 @@
 import { db } from "../config/db.js";
+import type { Goal, GoalTransaction, InsightGoal } from "../interfaces/goal.interface.js";
 
-export async function createGoal(goal: any): Promise<any> {
+export async function createGoal(goal: Goal): Promise<number> {
   const [id] = await db("goal")
     .insert({
       name: goal.name,
@@ -12,15 +13,15 @@ export async function createGoal(goal: any): Promise<any> {
   return id;
 }
 
-export async function getGoals(): Promise<any> {
+export async function getGoals(): Promise<Goal[]> {
   const goals = await db("goal").select("*");
   return goals;
 }
 
 export async function updateCurrentAmount(
-  goal_id: any,
-  contribution_amount: any
-) {
+  goal_id: number,
+  contribution_amount: number
+): Promise<number> {
   const [id] = await db("goal")
     .where("id", goal_id)
     .increment("current_amount", contribution_amount)
@@ -30,9 +31,9 @@ export async function updateCurrentAmount(
 }
 
 export async function createGoalTransaction(
-  goal_id: any,
-  contribution_amount: any
-): Promise<any> {
+  goal_id: number,
+  contribution_amount: number
+): Promise<number> {
   const [id] = await db("goal_transaction")
     .insert({
       goal_id: goal_id,
