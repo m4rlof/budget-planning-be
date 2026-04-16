@@ -7,6 +7,7 @@ import categoryRoutes from "./routes/category.routes.js";
 import authRoutes from "./routes/auth.route.js";
 import goalRoutes from "./routes/goal.routes.js";
 import savingRoutes from "./routes/insight.routes.js";
+import financialEntryRoutes from "./routes/financial-entry.routes.js";
 const app = express();
 app.use(cors({
     origin: "*",
@@ -22,6 +23,7 @@ async function start() {
     app.use("/api/v1", authRoutes);
     app.use("/api/v1", goalRoutes);
     app.use("/api/v1", savingRoutes);
+    app.use("/api/v1", financialEntryRoutes);
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => console.log(`App running on port ${PORT}`));
 }
